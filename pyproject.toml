@@ -1,7 +1,16 @@
 [project]
 name = "chatbot-rag"
 version = "0.1.0"
-description = "Add your description here"
+description = "Beginner-friendly HR chatbot with RAG, Gemini API, FastAPI, and ChromaDB"
 readme = "README.md"
 requires-python = ">=3.12"
-dependencies = []
+dependencies = [
+    "chromadb>=1.0.20",
+    "fastapi>=0.116.0",
+    "google-genai>=1.31.0",
+    "pypdf>=5.9.0",
+    "pydantic-settings>=2.10.1",
+    "pytest>=8.4.1",
+    "python-dotenv>=1.1.1",
+    "uvicorn>=0.35.0",
+]

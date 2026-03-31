@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HR Policy Copilot</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/styles.css" />
+</head>
+<body>
+  <div class="page-shell">
+    <div class="ambient ambient-left"></div>
+    <div class="ambient ambient-right"></div>
+
+    <header class="hero">
+      <div class="hero-copy">
+        <p class="eyebrow">Internal HR assistant</p>
+        <h1>Ask policy questions with grounded answers, not guesswork.</h1>
+        <p class="hero-text">
+          Built on FastAPI, ChromaDB, and Gemini. Index your HR PDFs, inspect system health,
+          and chat against the policy corpus from one interface.
+        </p>
+        <div class="hero-actions">
+          <button id="scroll-chat-btn" class="btn btn-primary" type="button">Start chatting</button>
+          <button id="ingest-btn" class="btn btn-secondary" type="button">Index HR policies</button>
+        </div>
+      </div>
+
+      <aside class="hero-panel glass-card">
+        <div class="status-header">
+          <div>
+            <p class="panel-label">Live status</p>
+            <h2>System snapshot</h2>
+          </div>
+          <button id="refresh-status-btn" class="icon-btn" type="button" aria-label="Refresh status">?</button>
+        </div>
+        <div class="status-grid">
+          <div class="status-tile">
+            <span class="status-kicker">API</span>
+            <strong id="api-status">Checking</strong>
+          </div>
+          <div class="status-tile">
+            <span class="status-kicker">Documents</span>
+            <strong id="doc-count">0</strong>
+          </div>
+          <div class="status-tile wide">
+            <span class="status-kicker">Policy folder</span>
+            <strong id="doc-path">Loading...</strong>
+          </div>
+          <div class="status-tile wide">
+            <span class="status-kicker">Vector store</span>
+            <strong id="vector-path">Loading...</strong>
+          </div>
+        </div>
+        <p id="system-note" class="system-note">Fetching health details...</p>
+      </aside>
+    </header>
+
+    <main class="workspace">
+      <section class="chat-section glass-card" id="chat-panel">
+        <div class="section-head">
+          <div>
+            <p class="panel-label">Chat workspace</p>
+            <h2>HR Policy Copilot</h2>
+          </div>
+          <div class="quick-chips">
+            <button class="chip" type="button" data-question="What is the employee leave policy?">Leave policy</button>
+            <button class="chip" type="button" data-question="What are the attendance and working hours rules?">Attendance rules</button>
+            <button class="chip" type="button" data-question="What does the dress code policy say?">Dress code</button>
+          </div>
+        </div>
+
+        <div id="chat-feed" class="chat-feed" aria-live="polite">
+          <article class="message assistant intro-card">
+            <div class="avatar">HR</div>
+            <div class="bubble">
+              <p class="message-label">Assistant</p>
+              <p>I can answer questions from the indexed HR policy PDFs. If the collection is empty, use <strong>Index HR policies</strong> first.</p>
+            </div>
+          </article>
+        </div>
+
+        <form id="chat-form" class="composer">
+          <label class="composer-label" for="question-input">Ask a policy question</label>
+          <div class="composer-row">
+            <textarea id="question-input" name="question" rows="1" placeholder="Example: How many leave days are allowed, and what is the approval process?"></textarea>
+            <button id="send-btn" class="btn btn-primary send-btn" type="submit">Send</button>
+          </div>
+          <p class="composer-hint">Responses are generated from retrieved policy chunks and include source references.</p>
+        </form>
+      </section>
+
+      <section class="side-panel">
+        <article class="glass-card utility-card">
+          <div class="section-head compact">
+            <div>
+              <p class="panel-label">Operations</p>
+              <h2>Control panel</h2>
+            </div>
+          </div>
+          <div class="utility-stack">
+            <button id="ingest-side-btn" class="btn btn-primary full" type="button">Run ingestion</button>
+            <button id="clear-chat-btn" class="btn btn-ghost full" type="button">Clear conversation</button>
+          </div>
+          <div id="ingest-result" class="result-card muted">No ingestion run yet.</div>
+        </article>
+
+        <article class="glass-card utility-card">
+          <div class="section-head compact">
+            <div>
+              <p class="panel-label">How it works</p>
+              <h2>Pipeline</h2>
+            </div>
+          </div>
+          <ol class="pipeline-list">
+            <li>Read PDFs from <code>data/hr_policies_pdf</code></li>
+            <li>Chunk policy text and store embeddings in ChromaDB</li>
+            <li>Retrieve relevant chunks for each question</li>
+            <li>Ask Gemini to answer only from retrieved context</li>
+          </ol>
+        </article>
+      </section>
+    </main>
+
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  </div>
+
+  <script src="/static/app.js" defer></script>
+</body>
+</html>
